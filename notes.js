@@ -1,14 +1,8 @@
 const fs = require('fs')
 const chalk = require('chalk')
 
-function getNotes() {
-  return "Your notes..."
-}
 
-
-
-
-const loadNotes = function () {
+const loadNotes = () => {
   try {
     const dataBuffer = fs.readFileSync('notes.json')
     const dataJSON = dataBuffer.toString()
@@ -19,18 +13,16 @@ const loadNotes = function () {
 
 }
 
-const saveNotes = function (notes) {
+const saveNotes = (notes) => {
   const dataJSON = JSON.stringify(notes)
   fs.writeFileSync('notes.json', dataJSON)
 }
 
 
 
-const removeNote = function (title) {
+const removeNote = (title) => {
   const notes = loadNotes()
-  const notesToKeep = notes.filter(function (eachNote) {
-    return eachNote.title !== title
-  })
+  const notesToKeep = notes.filter((eachNote) => eachNote.title !== title)
   if (notesToKeep.length === notes.length) {
     console.log(chalk.bgRed('No note found!'));
   } else {
@@ -40,13 +32,10 @@ const removeNote = function (title) {
 
 }
 
-const addNote = function (title, body) {
+const addNote = (title, body) => {
   const notes = loadNotes()
-  const duplicateNotes = notes.filter(function (eachNote) {
-    return eachNote.title === title
-  })
-
-  if (duplicateNotes.length === 0) {
+  const duplicateNote = notes.find((eachNote) => eachNote.title === title)
+  if (!duplicateNote) {
     notes.push({
       title: title,
       body: body
@@ -58,10 +47,31 @@ const addNote = function (title, body) {
   }
 }
 
+const listNotes = () => {
+  let notes = loadNotes()
+  console.log(chalk.yellow.inverse('Your notes:'));
+  notes.forEach((eachNote) => {
+    console.log(eachNote.title)
+  });
+
+}
+
+const readNote = (title) => {
+  let notes = loadNotes()
+  let note = notes.find((eachNote) => eachNote.title === title)
+  if (note) {
+    console.log(chalk.yellow.inverse(note.title));
+    console.log(note.body);
+  } else {
+    console.log(chalk.bgRed('no note found!'));
+  }
+}
+
 module.exports = {
-  getNotes: getNotes,
   addNote: addNote,
-  removeNote: removeNote
+  removeNote: removeNote,
+  listNotes: listNotes,
+  readNote: readNote
 }
 // now we are exporting an object with two properties, one for each function
 // now we can use both of these in app.js

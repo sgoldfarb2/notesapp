@@ -26,7 +26,7 @@ yargs.command({
       type: 'string'
     }
   },
-  handler: function (argv) {
+  handler(argv) {
     note.addNote(argv.title, argv.body)
     // this sends the args we put in the terminal into our addNote function in our notes.js file
   }
@@ -44,7 +44,7 @@ yargs.command({
       type: 'string'
     }
   },
-  handler: function (argv) {
+  handler(argv) {
     note.removeNote(argv.title)
   }
 })
@@ -53,8 +53,15 @@ yargs.command({
 yargs.command({
   command: 'read',
   describe: 'read a note',
-  handler: function () {
-    console.log('reading a note');
+  builder: {
+    title: {
+      describe: 'note title',
+      demandOption: true,
+      type: 'string'
+    }
+  },
+  handler(argv) {
+    note.readNote(argv.title)
   }
 })
 
@@ -62,8 +69,8 @@ yargs.command({
 yargs.command({
   command: 'list',
   describe: 'listing notes',
-  handler: function () {
-    console.log('listing all notes');
+  handler() {
+    note.listNotes()
   }
 })
 
